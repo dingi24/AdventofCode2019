@@ -22,7 +22,7 @@ namespace AdventofCode2019
                 s.Trim(' ', '\t', '\r');
                 string[] data = s.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                int[] mass = new int[data.Length];
+                mass = new int[data.Length];
                 fuel = 0;
 
                 for (int i = 0; i < data.Length; i++)
