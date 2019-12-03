@@ -17,7 +17,6 @@ namespace AdventofCode2019
             {
                 StreamReader sr = new StreamReader(url);
                 string s = sr.ReadToEnd();
-                s.Trim(' ', '\t', '\r', '\n');
                 string[] data = s.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
                 intcode = new int[data.Length];

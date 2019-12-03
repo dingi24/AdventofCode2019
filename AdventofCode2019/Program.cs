@@ -19,7 +19,7 @@ namespace AdventofCode2019
             IntcodeComputer a = new IntcodeComputer("../../../gravity_assist_programm.txt");
             a.Alarm1202();
             int[] intcode = a.Run();
-            int nounverb = 99999;
+            int nounverb = -1;
             for(int noun = 0; noun <= 99; noun++)
             {
                 for(int verb =0;verb<=99; verb++)
@@ -33,9 +33,11 @@ namespace AdventofCode2019
                     }
                 }
             }
-            
             Console.WriteLine("day 2 solution: {0} {1}" ,intcode[0],nounverb);
 
+            //day3
+            Wires w = new Wires("../../../wires.txt");
+            w.PrintArrays();
 
             Console.ReadKey();
         }

@@ -19,7 +19,6 @@ namespace AdventofCode2019
             {
                 StreamReader sr = new StreamReader(url);
                 string s = sr.ReadToEnd();
-                s.Trim(' ', '\t', '\r');
                 string[] data = s.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
                 mass = new int[data.Length];
