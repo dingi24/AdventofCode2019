@@ -8,13 +8,14 @@ namespace AdventofCode2019
 {
     class Password6D
     {
-        private int passwordAmount;
+        private int passwordAmountCrit1, passwordAmountCrit2;
 
         public Password6D(int prangeStart,int prangeEnd)
         {
             int[] digits = new int[6];
 
-            passwordAmount = 0;
+            passwordAmountCrit1 = 0;
+            passwordAmountCrit2 = 0;
             for (int i = prangeStart; i <= prangeEnd; i++)
             {
                 int j = i;
@@ -30,16 +31,24 @@ namespace AdventofCode2019
                 j %= 10;
                 digits[5] = j;
 
-                if((digits[0]==digits[1]||digits[1]==digits[2] || digits[2] == digits[3] || digits[3] == digits[4] || digits[4] == digits[5]) &&(digits[0] >= digits[1] && digits[1]>= digits[2] && digits[2] >= digits[3] && digits[3] >= digits[4] && digits[4] >= digits[5]))
+                if((digits[0]==digits[1]||digits[1]==digits[2] || digits[2] == digits[3] || digits[3] == digits[4] || digits[4] == digits[5]) && (digits[5] >= digits[4] && digits[4]>= digits[3] && digits[3] >= digits[2] && digits[2] >= digits[1] && digits[1] >= digits[0]))
                 {
-                    passwordAmount++;
+                    passwordAmountCrit1++;
+                    if(((digits[0]==digits[1])&&digits[1]!=digits[2])|| ((digits[1] == digits[2]) && digits[2] != digits[3] && digits[2] != digits[0]) || ((digits[2] == digits[3]) && digits[3] != digits[4] && digits[3] != digits[1]) || ((digits[3] == digits[4]) && digits[4] != digits[5] && digits[4] != digits[2]) || ((digits[4] == digits[5]) && digits[4] != digits[3]))
+                    {
+                        passwordAmountCrit2++;
+                    }
                 }
             }
 
         }
-        public int GetPasswordsAmount()
+        public int GetPasswordsAmountCrit1()
         {
-            return passwordAmount;
+            return passwordAmountCrit1;
+        }
+        public int GetPasswordsAmountCrit2()
+        {
+            return passwordAmountCrit2;
         }
     }
     

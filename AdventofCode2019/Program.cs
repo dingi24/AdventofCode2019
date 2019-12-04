@@ -41,7 +41,7 @@ namespace AdventofCode2019
 
             //day4
             Password6D p = new Password6D(265275, 781584);
-            Console.WriteLine("day 4 solution: {0} {1}",p.GetPasswordsAmount(),-1);
+            Console.WriteLine("day 4 solution: {0} {1}",p.GetPasswordsAmountCrit1(),p.GetPasswordsAmountCrit2());
 
             Console.ReadKey();
         }
