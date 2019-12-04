@@ -37,7 +37,11 @@ namespace AdventofCode2019
 
             //day3
             Wires w = new Wires("../../../wires.txt");
-            Console.WriteLine("day 2 solution: {0} {1}",w.GetManhattendistance(),w.GetFewestStepsToIntersection());
+            Console.WriteLine("day 3 solution: {0} {1}",w.GetManhattendistance(),w.GetFewestStepsToIntersection());
+
+            //day4
+            Password6D p = new Password6D(265275, 781584);
+            Console.WriteLine("day 4 solution: {0} {1}",p.GetPasswordsAmount(),-1);
 
             Console.ReadKey();
         }
