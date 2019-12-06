@@ -12,11 +12,11 @@ namespace AdventofCode2019
         static void Main(string[] args)
         {
             //day 1
-            Fuel f = new Fuel("../../../mass.txt");
+            Fuel f = new Fuel("../../../input/mass.txt");
             Console.WriteLine("day 1 solution: " + f.GetFuel());
 
             //day2
-            IntcodeComputer ic1 = new IntcodeComputer("../../../gravity_assist_programm.txt");
+            IntcodeComputer ic1 = new IntcodeComputer("../../../input/gravity_assist_programm.txt");
             ic1.Alarm1202();
             int[] intcode = ic1.Run();
             int nounverb = -1;
@@ -24,7 +24,7 @@ namespace AdventofCode2019
             {
                 for (int verb = 0; verb <= 99; verb++)
                 {
-                    ic1 = new IntcodeComputer("../../../gravity_assist_programm.txt");
+                    ic1 = new IntcodeComputer("../../../input/gravity_assist_programm.txt");
                     ic1.SetNounVerb(noun, verb);
                     int[] check = ic1.Run();
                     if (check[0] == 19690720)
@@ -36,7 +36,7 @@ namespace AdventofCode2019
             Console.WriteLine("day 2 solution: {0} {1}", intcode[0], nounverb);
 
             //day3
-            Wires w = new Wires("../../../wires.txt");
+            Wires w = new Wires("../../../input/wires.txt");
             Console.WriteLine("day 3 solution: {0} {1}", w.GetManhattendistance(), w.GetFewestStepsToIntersection());
 
             //day4
@@ -44,10 +44,26 @@ namespace AdventofCode2019
             Console.WriteLine("day 4 solution: {0} {1}", p.GetPasswordsAmountCrit1(), p.GetPasswordsAmountCrit2());
 
             //day5
-
             Console.WriteLine("day 5 solution: ");
-            IntcodeComputer ic2 = new IntcodeComputer("../../../TEST.txt");
+            IntcodeComputer ic2 = new IntcodeComputer("../../../input/TEST.txt");
             ic2.Run();
+            Console.Write("\n");
+
+            //day6
+            //OrbitMap om = new OrbitMap("../../../input/orbit_map.txt");
+            OrbitMap om = new OrbitMap(new string[] { "COM)B",
+"B)C",
+"C)D",
+"D)E",
+"E)F",
+"B)G",
+"G)H",
+"E)J",
+"J)K",
+"K)L"});
+            Console.WriteLine("day 6 solution: {0}",om.GetOrbitSum());
+
+
             Console.ReadKey();
         }
     }

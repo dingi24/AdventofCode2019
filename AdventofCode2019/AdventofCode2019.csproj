@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Fuel.cs" />
     <Compile Include="IntcodeComputer.cs" />
+    <Compile Include="OrbitMap.cs" />
     <Compile Include="Passwort6D.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

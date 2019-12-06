@@ -20,7 +20,7 @@ namespace AdventofCode2019
             {
                 StreamReader sr = new StreamReader(url);
                 string s = sr.ReadToEnd();
-                s = s.Trim(' ','\r','\t');
+                s = s.Trim(' ', '\r', '\t');
                 string[] data = s.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
                 wirePath1Dir = data[0].Split(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',' ,}, StringSplitOptions.RemoveEmptyEntries);    
