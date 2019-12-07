@@ -50,18 +50,8 @@ namespace AdventofCode2019
             Console.Write("\n");
 
             //day6
-            //OrbitMap om = new OrbitMap("../../../input/orbit_map.txt");
-            OrbitMap om = new OrbitMap(new string[] { "COM)B",
-"B)C",
-"C)D",
-"D)E",
-"E)F",
-"B)G",
-"G)H",
-"E)J",
-"J)K",
-"K)L"});
-            Console.WriteLine("day 6 solution: {0}",om.GetOrbitSum());
+            OrbitMap om = new OrbitMap("../../../input/orbit_map.txt");
+            Console.WriteLine("day 6 solution: {0} {1}",om.GetOrbitSum(),om.GetMinimumTransfers("SAN","YOU"));
 
 
             Console.ReadKey();
