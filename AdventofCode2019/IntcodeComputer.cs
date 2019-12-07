@@ -9,14 +9,19 @@ namespace AdventofCode2019
 {
     class IntcodeComputer
     {
-        private int[] intcode;
+        private int[] intcode,input;
+        private int output;
 
         public IntcodeComputer(int[] intcode)
         {
             this.intcode = intcode;
+            input = new int[] { 0 };
+            output = 0;
         }
         public IntcodeComputer(string url)
         {
+            input = new int[] { 0 };
+            output = 0;
             try
             {
                 StreamReader sr = new StreamReader(url);
@@ -36,6 +41,14 @@ namespace AdventofCode2019
                 Console.WriteLine(e.Message);
             }
         }
+        public void SetInput(int[] input)
+        {
+            this.input = input;
+        }
+        public int GetOutput()
+        {
+            return output;
+        }
         public void Alarm1202()
         {
             intcode[1] = 12;
@@ -46,11 +59,11 @@ namespace AdventofCode2019
             intcode[1] = noun;
             intcode[2] = verb;
         }
-        public int[] Run()
+        public int[] Run(bool enableUI)
         {
             int[] intcodeR = intcode;
             bool _continue = true;
-            int opcode, modeP1, modeP2, modeP3,instruction,index1,index2,index3,instructionLength=0;
+            int opcode, modeP1, modeP2, modeP3, instruction, index1, index2, index3, instructionLength = 0, inputIndex = 0;
             for(int i = 0; i < intcode.Length&&_continue; i += instructionLength)
             {
                 instruction = intcodeR[i];
@@ -80,12 +93,30 @@ namespace AdventofCode2019
                         break;
                     case 3:
                         instructionLength = 2;
-                        Console.Write("input: ");
-                        intcodeR[index[0]] = Convert.ToInt32(Console.ReadLine());
+                        if (enableUI)
+                        {
+                            Console.Write("input: ");
+                            intcodeR[index[0]] = Convert.ToInt32(Console.ReadLine());
+                        }
+                        else
+                        {
+                            intcodeR[index[0]] = input[inputIndex];
+                            if (inputIndex < input.Length - 1)
+                            {
+                                inputIndex++;
+                            }
+                        }
                         break;
                     case 4:
                         instructionLength = 2;
-                        Console.Write(intcodeR[index[0]]+" ");
+                        if (enableUI)
+                        {
+                            Console.Write(intcodeR[index[0]] + " ");
+                        }
+                        else
+                        {
+                            output = intcodeR[index[0]];
+                        }
                         break;
                     case 5:
                         if (intcodeR[index[0]] != 0)
