@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Threading;
 
 namespace AdventofCode2019
 {
@@ -11,6 +12,8 @@ namespace AdventofCode2019
     {
         private int[] intcode,input;
         private int output;
+        private IntcodeComputer icOut;
+        private string name;
 
         public IntcodeComputer(int[] intcode)
         {
@@ -41,9 +44,38 @@ namespace AdventofCode2019
                 Console.WriteLine(e.Message);
             }
         }
+        public IntcodeComputer(string url,IntcodeComputer icOut) : this(url)
+        {
+            this.icOut = icOut;
+        }
+        public void SetName(string name)
+        {
+            this.name = name;
+        }
+        public void SetICOut(IntcodeComputer icOut)
+        {
+            this.icOut = icOut;
+        }
         public void SetInput(int[] input)
         {
             this.input = input;
+        }
+        public void InputAdd(int add)
+        {
+            Console.WriteLine(name + ": Received Input " + add);
+            int[] newInput = new int[input.Length+1];
+            int i;
+            for (i = 0; i < input.Length; i++)
+            {
+                newInput[i] = input[i];
+            }
+            newInput[i] = add;
+            input = newInput;
+        }
+        public int GetLastInput()
+        {
+            Console.WriteLine(name+": Last Input is "+input[input.Length - 1]);
+            return input[input.Length - 1];
         }
         public int GetOutput()
         {
@@ -59,7 +91,7 @@ namespace AdventofCode2019
             intcode[1] = noun;
             intcode[2] = verb;
         }
-        public int[] Run(bool enableUI)
+        public int[] Run(bool enableUI,bool hasICOut)
         {
             int[] intcodeR = intcode;
             bool _continue = true;
@@ -93,7 +125,17 @@ namespace AdventofCode2019
                         break;
                     case 3:
                         instructionLength = 2;
-                        if (enableUI)
+                        if (hasICOut)
+                        {
+                            while (inputIndex >= input.Length)
+                            {
+                                Thread.Sleep(0);
+                            }
+                            Console.WriteLine(name + ": Next Input is: " + input[inputIndex]);    
+                            intcodeR[index[0]] = input[inputIndex];
+                            inputIndex++;
+                        }
+                        else if (enableUI)
                         {
                             Console.Write("input: ");
                             intcodeR[index[0]] = Convert.ToInt32(Console.ReadLine());
@@ -115,6 +157,11 @@ namespace AdventofCode2019
                         }
                         else
                         {
+                            if (hasICOut)
+                            {
+                                Console.WriteLine(name + ": Send Output " + intcodeR[index[0]]);
+                                icOut.InputAdd(intcodeR[index[0]]);
+                            } 
                             output = intcodeR[index[0]];
                         }
                         break;
@@ -163,6 +210,7 @@ namespace AdventofCode2019
                         }
                         break;
                     case 99:
+                        Console.WriteLine(name + ": Operation complete");
                         _continue = false;
                         break;                       
                 }

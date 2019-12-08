@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Threading;
 
 namespace AdventofCode2019
 {
@@ -25,7 +26,7 @@ namespace AdventofCode2019
                     case 2:
                         IntcodeComputer ic1 = new IntcodeComputer("../../../input/gravity_assist_programm.txt");
                         ic1.Alarm1202();
-                        int[] intcode = ic1.Run(true);
+                        int[] intcode = ic1.Run(true,false);
                         int nounverb = -1;
                         for (int noun = 0; noun <= 99; noun++)
                         {
@@ -33,7 +34,7 @@ namespace AdventofCode2019
                             {
                                 ic1 = new IntcodeComputer("../../../input/gravity_assist_programm.txt");
                                 ic1.SetNounVerb(noun, verb);
-                                int[] check = ic1.Run(true);
+                                int[] check = ic1.Run(true,false);
                                 if (check[0] == 19690720)
                                 {
                                     nounverb = 100 * noun + verb;
@@ -53,7 +54,7 @@ namespace AdventofCode2019
                     case 5:
                         Console.WriteLine("day 5 solution: ");
                         IntcodeComputer ic2 = new IntcodeComputer("../../../input/TEST.txt");
-                        ic2.Run(true);
+                        ic2.Run(true,false);
                         Console.Write("\n");
                         break;
                     case 6:
@@ -61,7 +62,7 @@ namespace AdventofCode2019
                         Console.WriteLine("day 6 solution: {0} {1}", om.GetOrbitSum(), om.GetMinimumTransfers("SAN", "YOU"));
                         break;
                     case 7:
-                        int highestoutput = 0;
+                        int highestoutput1 = 0;
                         IntcodeComputer ic3 = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
                         for (int i = 0; i < 5; i++)
                         {
@@ -80,12 +81,12 @@ namespace AdventofCode2019
                                                 for (int n = 0; n < 5; n++)
                                                 {
                                                     ic3.SetInput(new int[] {phase[n], inputSignal });
-                                                    ic3.Run(false);
+                                                    ic3.Run(false,false);
                                                     inputSignal = ic3.GetOutput();
                                                 }
-                                                if (inputSignal > highestoutput)
+                                                if (inputSignal > highestoutput1)
                                                 {
-                                                    highestoutput = inputSignal;
+                                                    highestoutput1 = inputSignal;
                                                 }
                                             }
                                         }
@@ -93,9 +94,54 @@ namespace AdventofCode2019
                                 }
                             }
                         }
-                        Console.WriteLine("day 7 solution: {0}",highestoutput);
+                        int highestoutput2 = 0;
+                        for (int i = 5; i < 10; i++)
+                        {
+                            for (int j = 5; j < 10; j++)
+                            {
+                                for (int k = 5; k < 10; k++)
+                                {
+                                    for (int l = 5; l < 10; l++)
+                                    {
+                                        for (int m = 5; m < 10; m++)
+                                        {
+                                            if (!new int[] { j, k, l, m }.Contains(i) && !new int[] { i, k, l, m }.Contains(j) && !new int[] { i, j, l, m }.Contains(k) && !new int[] { i, j, k, m }.Contains(l) && !new int[] { i, j, k, l }.Contains(m))
+                                            {
+                                                IntcodeComputer ampA = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
+                                                IntcodeComputer ampB = new IntcodeComputer("../../../input/amplifier_controller_software.txt",ampA);
+                                                IntcodeComputer ampC = new IntcodeComputer("../../../input/amplifier_controller_software.txt",ampB);
+                                                IntcodeComputer ampD = new IntcodeComputer("../../../input/amplifier_controller_software.txt",ampC);
+                                                IntcodeComputer ampE = new IntcodeComputer("../../../input/amplifier_controller_software.txt", ampD);
+                                                ampA.SetICOut(ampE);
+                                                ampA.SetInput(new int[] {i,0});
+                                                ampB.SetInput(new int[] { j });
+                                                ampC.SetInput(new int[] { k });
+                                                ampD.SetInput(new int[] { l });
+                                                ampE.SetInput(new int[] { m });
+
+                                                Thread aThread = new Thread(AmplifierLoopThread),bThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),cThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),dThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),eThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread));
+                                                aThread.Start(ampA);
+                                                bThread.Start(ampB);
+                                                cThread.Start(ampC);
+                                                dThread.Start(ampD);
+                                                eThread.Start(ampE);
+                                                eThread.Join();
+                                                if ( ampA.GetLastInput()> highestoutput2)
+                                                {
+                                                    highestoutput2 = ampA.GetLastInput();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Console.WriteLine("day 7 solution: {0} {1}",highestoutput1,highestoutput2);
                         break;
                     case 8:
+                        SpaceImage si = new SpaceImage(25,6,"../../../input/space_image.txt");
+                        Console.WriteLine("day 8 solution: {0}",si.Get1_2MultipliedOfLayerWithFewest0Digits());
+                        si.PrintImage();
                         break;
                     case 9:
                         break;
@@ -150,5 +196,10 @@ namespace AdventofCode2019
             Console.WriteLine("\nMerry Christmas!");
             Console.ReadKey();
         }
+        public static void AmplifierLoopThread(object obj)
+        {
+            IntcodeComputer ic = (IntcodeComputer)obj;
+            ic.Run(false,true);
+        } 
     }
 }
