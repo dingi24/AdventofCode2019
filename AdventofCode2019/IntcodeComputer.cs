@@ -10,20 +10,21 @@ namespace AdventofCode2019
 {
     class IntcodeComputer
     {
-        private int[] intcode,input;
-        private int output;
+        private long[] intcode, input;
+        private long output;
         private IntcodeComputer icOut;
         private string name;
 
-        public IntcodeComputer(int[] intcode)
+
+        public IntcodeComputer(long[] intcode)
         {
             this.intcode = intcode;
-            input = new int[] { 0 };
+            input = new long[] { 0 };
             output = 0;
         }
         public IntcodeComputer(string url)
         {
-            input = new int[] { 0 };
+            input = new long[] { 0 };
             output = 0;
             try
             {
@@ -31,12 +32,12 @@ namespace AdventofCode2019
                 string s = sr.ReadToEnd();
                 string[] data = s.Split(new char[] { ',','\n','\t',' ','\r' }, StringSplitOptions.RemoveEmptyEntries);
 
-                intcode = new int[data.Length];
+                intcode = new long[data.Length+2*data.Length];
 
 
                 for (int i = 0; i < data.Length; i++)
                 {
-                    intcode[i] = int.Parse(data[i]);
+                    intcode[i] = long.Parse(data[i]);
                 }
             }
             catch (IOException e)
@@ -56,14 +57,14 @@ namespace AdventofCode2019
         {
             this.icOut = icOut;
         }
-        public void SetInput(int[] input)
+        public void SetInput(long[] input)
         {
             this.input = input;
         }
-        public void InputAdd(int add)
+        public void InputAdd(long add)
         {
             Console.WriteLine(name + ": Received Input " + add);
-            int[] newInput = new int[input.Length+1];
+            long[] newInput = new long[input.Length+1];
             int i;
             for (i = 0; i < input.Length; i++)
             {
@@ -72,12 +73,12 @@ namespace AdventofCode2019
             newInput[i] = add;
             input = newInput;
         }
-        public int GetLastInput()
+        public long GetLastInput()
         {
             Console.WriteLine(name+": Last Input is "+input[input.Length - 1]);
             return input[input.Length - 1];
         }
-        public int GetOutput()
+        public long GetOutput()
         {
             return output;
         }
@@ -91,14 +92,15 @@ namespace AdventofCode2019
             intcode[1] = noun;
             intcode[2] = verb;
         }
-        public int[] Run(bool enableUI,bool hasICOut)
+        public long[] Run(bool enableUI,bool hasICOut)
         {
-            int[] intcodeR = intcode;
+            long[] intcodeR = intcode;
             bool _continue = true;
-            int opcode, modeP1, modeP2, modeP3, instruction, index1, index2, index3, instructionLength = 0, inputIndex = 0;
-            for(int i = 0; i < intcode.Length&&_continue; i += instructionLength)
+            int index1, index2, index3, instructionLength = 0, inputIndex = 0, modeP1, modeP2, modeP3,opcode, instruction;
+            long relativeBase=0;
+            for(long i = 0; i < intcode.Length&&_continue; i += instructionLength)
             {
-                instruction = intcodeR[i];
+                instruction = (int)intcodeR[i];
 
                 modeP3 = instruction / 10000;
                 instruction %= 10000;
@@ -108,10 +110,10 @@ namespace AdventofCode2019
                 instruction %= 100;
                 opcode = instruction;
 
-                int[] index = new int[] { 0, 0, 0 };
+                long[] index = new long[] { 0, 0, 0 };
                 if (i+3 < intcode.Length)
                 {
-                    index = GetIndex(i, modeP1, modeP2, modeP3, intcodeR[i + 1], intcodeR[i + 2], intcodeR[i + 3]);
+                    index = GetIndex(i,relativeBase, modeP1, modeP2, modeP3, intcodeR[i + 1], intcodeR[i + 2], intcodeR[i + 3]);
                 }    
                 switch (opcode)
                 {
@@ -209,17 +211,21 @@ namespace AdventofCode2019
                             intcodeR[index[2]] = 0;
                         }
                         break;
+                    case 9:
+                        instructionLength = 2;
+                        relativeBase += intcodeR[index[0]];
+                        break;
                     case 99:
-                        Console.WriteLine(name + ": Operation complete");
+                        //Console.WriteLine(name + ": Operation complete");
                         _continue = false;
                         break;                       
                 }
             }
             return intcodeR;
         }
-        private int[] GetIndex(int i,int m1,int m2,int m3,int v1,int v2, int v3)
+        private long[] GetIndex(long i,long rb,long m1,long m2,long m3,long v1,long v2, long v3)
         {
-            int i1=0, i2=0, i3=0;
+            long i1=0, i2=0, i3=0;
             switch (m1)
             {
                 case 0:
@@ -227,6 +233,9 @@ namespace AdventofCode2019
                     break;
                 case 1:
                     i1 = i + 1;
+                    break;
+                case 2:
+                    i1 = rb + v1;
                     break;
             }
             switch (m2)
@@ -237,6 +246,9 @@ namespace AdventofCode2019
                 case 1:
                     i2 = i + 2;
                     break;
+                case 2:
+                    i2 = rb + v2;
+                    break;
             }
             switch (m3)
             {
@@ -246,8 +258,11 @@ namespace AdventofCode2019
                 case 1:
                     i3 = i + 3;
                     break;
+                case 2:
+                    i3 = rb + v3;
+                    break;
             }
-            return new int[] { i1, i2, i3 };
+            return new long[] { i1, i2, i3 };
         }
     }
 }
