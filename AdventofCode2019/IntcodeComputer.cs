@@ -10,22 +10,20 @@ namespace AdventofCode2019
 {
     class IntcodeComputer
     {
-        private long[] intcode, input;
-        private long output;
+        private long[] intcode, input, output;
         private IntcodeComputer icOut;
-        private string name;
 
 
         public IntcodeComputer(long[] intcode)
         {
             this.intcode = intcode;
-            input = new long[] { 0 };
-            output = 0;
+            input = new long[] {  };
+            output = new long[] { };
         }
         public IntcodeComputer(string url)
         {
-            input = new long[] { 0 };
-            output = 0;
+            input = new long[] {  };
+            output = new long[] { };
             try
             {
                 StreamReader sr = new StreamReader(url);
@@ -49,10 +47,6 @@ namespace AdventofCode2019
         {
             this.icOut = icOut;
         }
-        public void SetName(string name)
-        {
-            this.name = name;
-        }
         public void SetICOut(IntcodeComputer icOut)
         {
             this.icOut = icOut;
@@ -63,7 +57,6 @@ namespace AdventofCode2019
         }
         public void InputAdd(long add)
         {
-            Console.WriteLine(name + ": Received Input " + add);
             long[] newInput = new long[input.Length+1];
             int i;
             for (i = 0; i < input.Length; i++)
@@ -75,12 +68,26 @@ namespace AdventofCode2019
         }
         public long GetLastInput()
         {
-            Console.WriteLine(name+": Last Input is "+input[input.Length - 1]);
             return input[input.Length - 1];
         }
-        public long GetOutput()
+        public long[] GetOutput()
         {
             return output;
+        }
+        public long GetLastOutput() 
+        {
+            return output[output.Length - 1];
+        }
+        public void OutputAdd(long add)
+        {
+            long[] newOutput = new long[output.Length + 1];
+            int i;
+            for (i = 0; i < output.Length; i++)
+            {
+                newOutput[i] = output[i];
+            }
+            newOutput[i] = add;
+            output = newOutput;
         }
         public void Alarm1202()
         {
@@ -96,7 +103,7 @@ namespace AdventofCode2019
         {
             long[] intcodeR = intcode;
             bool _continue = true;
-            int index1, index2, index3, instructionLength = 0, inputIndex = 0, modeP1, modeP2, modeP3,opcode, instruction;
+            int  instructionLength = 0, inputIndex = 0, modeP1, modeP2, modeP3,opcode, instruction;
             long relativeBase=0;
             for(long i = 0; i < intcode.Length&&_continue; i += instructionLength)
             {
@@ -132,14 +139,12 @@ namespace AdventofCode2019
                             while (inputIndex >= input.Length)
                             {
                                 Thread.Sleep(0);
-                            }
-                            Console.WriteLine(name + ": Next Input is: " + input[inputIndex]);    
+                            }  
                             intcodeR[index[0]] = input[inputIndex];
                             inputIndex++;
                         }
                         else if (enableUI)
                         {
-                            Console.Write("input: ");
                             intcodeR[index[0]] = Convert.ToInt32(Console.ReadLine());
                         }
                         else
@@ -161,10 +166,9 @@ namespace AdventofCode2019
                         {
                             if (hasICOut)
                             {
-                                Console.WriteLine(name + ": Send Output " + intcodeR[index[0]]);
                                 icOut.InputAdd(intcodeR[index[0]]);
                             } 
-                            output = intcodeR[index[0]];
+                            OutputAdd ( intcodeR[index[0]]);
                         }
                         break;
                     case 5:
