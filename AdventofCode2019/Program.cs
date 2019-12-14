@@ -82,7 +82,7 @@ namespace AdventofCode2019
                                                 {
                                                     ic3.SetInput(new long[] {phase[n], inputSignal });
                                                     ic3.Run(false,false);
-                                                    inputSignal = ic3.GetOutput();
+                                                    inputSignal = ic3.GetLastOutput();
                                                 }
                                                 if (inputSignal > highestoutput1)
                                                 {
@@ -168,6 +168,44 @@ namespace AdventofCode2019
                         Console.WriteLine("day 12 solution: {0} {1}", jm.GetTotalEnergyAfterXSteps(1000), jm.GetMinStepsUntilRepeat());
                         break;
                     case 13:
+                        IntcodeComputer ArcadeGame = new IntcodeComputer("../../../input/arcade_game.txt");
+                        ArcadeGame.Run(false,false);
+                        long[] gameFieldData = ArcadeGame.GetOutput();
+                        int blockTileCount = 0;
+                        for (int i = 0; i < gameFieldData.Length; i += 3)
+                        {
+                            if(gameFieldData[i + 2] == 2)
+                            {
+                                blockTileCount++;
+                            }
+                        }
+                        Console.WriteLine("\nday 13 solution: {0}", blockTileCount);
+                        //for (int i = 0; i < gameFieldData.Length; i+=3)
+                        //{
+                        //    Console.SetCursorPosition((int)gameFieldData[i], (int)gameFieldData[i + 1]);
+                        //    switch (gameFieldData[i + 2])
+                        //    {
+                        //        case 0:
+                        //            Console.Write(" ");
+                        //            break;
+                        //        case 1:
+                        //            Console.Write("#");
+                        //            break;
+                        //        case 2:
+                        //            Console.Write("=");
+                        //            blockTileCount++;
+                        //            break;
+                        //        case 3:
+                        //            Console.Write("-");
+                        //            break;
+                        //        case 4:
+                        //            Console.Write("o");
+                        //            break;
+                        //        default:
+                        //            Console.Write("-1");
+                        //            break;
+                        //    }
+                        //}
                         break;
                     case 14:
                         break;
