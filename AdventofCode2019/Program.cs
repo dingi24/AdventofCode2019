@@ -108,16 +108,28 @@ namespace AdventofCode2019
                                             if (!new int[] { j, k, l, m }.Contains(i) && !new int[] { i, k, l, m }.Contains(j) && !new int[] { i, j, l, m }.Contains(k) && !new int[] { i, j, k, m }.Contains(l) && !new int[] { i, j, k, l }.Contains(m))
                                             {
                                                 IntcodeComputer ampA = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
-                                                IntcodeComputer ampB = new IntcodeComputer("../../../input/amplifier_controller_software.txt",ampA);
-                                                IntcodeComputer ampC = new IntcodeComputer("../../../input/amplifier_controller_software.txt",ampB);
-                                                IntcodeComputer ampD = new IntcodeComputer("../../../input/amplifier_controller_software.txt",ampC);
-                                                IntcodeComputer ampE = new IntcodeComputer("../../../input/amplifier_controller_software.txt", ampD);
-                                                ampA.SetICOut(ampE);
+                                                IntcodeComputer ampB = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
+                                                IntcodeComputer ampC = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
+                                                IntcodeComputer ampD = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
+                                                IntcodeComputer ampE = new IntcodeComputer("../../../input/amplifier_controller_software.txt");
+
+                                                ampA.SetICOut(ampB);
+                                                ampB.SetICOut(ampC);
+                                                ampC.SetICOut(ampD);
+                                                ampD.SetICOut(ampE);
+                                                ampE.SetICOut(ampA);
+
                                                 ampA.SetInput(new long[] {i,0});
                                                 ampB.SetInput(new long[] { j });
                                                 ampC.SetInput(new long[] { k });
                                                 ampD.SetInput(new long[] { l });
                                                 ampE.SetInput(new long[] { m });
+
+                                                ampA.SetName("ampA");
+                                                ampB.SetName("ampB");
+                                                ampC.SetName("ampC");
+                                                ampD.SetName("ampD");
+                                                ampE.SetName("ampE");
 
                                                 Thread aThread = new Thread(AmplifierLoopThread),bThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),cThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),dThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),eThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread));
                                                 aThread.Start(ampA);
@@ -152,6 +164,8 @@ namespace AdventofCode2019
                     case 11:
                         break;
                     case 12:
+                        JupiterMoons jm = new JupiterMoons("../../../input/jupiter_moons.txt");
+                        Console.WriteLine("day 12 solution: {0} {1}", jm.GetTotalEnergyAfterXSteps(1000), jm.GetMinStepsUntilRepeat());
                         break;
                     case 13:
                         break;
