@@ -43,6 +43,10 @@ namespace AdventofCode2019
                 Console.WriteLine(e.Message);
             }
         }
+        public void SetValueAtX(int x,int value)
+        {
+            intcode[x] = value;
+        }
         public IntcodeComputer(string url,IntcodeComputer icOut) : this(url)
         {
             this.icOut = icOut;
@@ -65,6 +69,10 @@ namespace AdventofCode2019
             }
             newInput[i] = add;
             input = newInput;
+        }
+        public void ResetOutput()
+        {
+            output = new long[] { };
         }
         public long GetLastInput()
         {
@@ -99,11 +107,15 @@ namespace AdventofCode2019
             intcode[1] = noun;
             intcode[2] = verb;
         }
-        public long[] Run(bool enableUI,bool hasICOut)
+        public long[] Run(int IOSetting)
         {
-            long[] intcodeR = intcode;
+            long[] intcodeR = new long[intcode.Length];
+            for(int i = 0; i < intcode.Length; i++)
+            {
+                intcodeR[i] = intcode[i];
+            }
             bool _continue = true;
-            int  instructionLength = 0, inputIndex = 0, modeP1, modeP2, modeP3,opcode, instruction;
+            int  instructionLength = 0, inputIndex = 0, modeP1, modeP2, modeP3,opcode, instruction,outputAGcounter=0;
             long relativeBase=0;
             for(long i = 0; i < intcode.Length&&_continue; i += instructionLength)
             {
@@ -134,41 +146,68 @@ namespace AdventofCode2019
                         break;
                     case 3:
                         instructionLength = 2;
-                        if (hasICOut)
+                        switch (IOSetting)
                         {
-                            while (inputIndex >= input.Length)
-                            {
-                                Thread.Sleep(0);
-                            }  
-                            intcodeR[index[0]] = input[inputIndex];
-                            inputIndex++;
-                        }
-                        else if (enableUI)
-                        {
-                            intcodeR[index[0]] = Convert.ToInt32(Console.ReadLine());
-                        }
-                        else
-                        {
-                            intcodeR[index[0]] = input[inputIndex];
-                            if (inputIndex < input.Length - 1)
-                            {
+                            case 1:
+                                intcodeR[index[0]] = Convert.ToInt32(Console.ReadLine());
+                                break;
+                            case 2:
+                                while (inputIndex >= input.Length)
+                                {
+                                    Thread.Sleep(0);
+                                }
+                                intcodeR[index[0]] = input[inputIndex];
                                 inputIndex++;
-                            }
+                                break;
+                            case 3:
+                                Console.SetCursorPosition(0, 23);
+                                Console.WriteLine("                          ");
+                                Console.SetCursorPosition(0, 23);
+                                Console.Write("Next Move?: ");
+                                string e = Console.ReadLine();
+                                if (int.TryParse(e,out int n))
+                                {
+                                    intcodeR[index[0]] = Convert.ToInt32(e);
+                                }
+                                else
+                                {
+                                    intcodeR[index[0]] = 0;
+                                }
+                                break;
+                            case 0:
+                            default:
+                                intcodeR[index[0]] = input[inputIndex];
+                                if (inputIndex < input.Length - 1)
+                                {
+                                    inputIndex++;
+                                }
+                                break;
                         }
                         break;
                     case 4:
                         instructionLength = 2;
-                        if (enableUI)
+                        switch (IOSetting)
                         {
-                            Console.Write(intcodeR[index[0]] + " ");
-                        }
-                        else
-                        {
-                            if (hasICOut)
-                            {
+                            case 1:
+                                Console.Write(intcodeR[index[0]] + " ");
+                                break;
+                            case 2:
                                 icOut.InputAdd(intcodeR[index[0]]);
-                            } 
-                            OutputAdd ( intcodeR[index[0]]);
+                                OutputAdd(intcodeR[index[0]]);
+                                break;
+                            case 3:
+                                OutputAdd(intcodeR[index[0]]);
+                                outputAGcounter++;
+                                if (outputAGcounter == 3)
+                                {
+                                    DrawTile();
+                                    outputAGcounter = 0;
+                                }
+                                break;
+                            case 0:
+                            default:
+                                OutputAdd(intcodeR[index[0]]);
+                                break;
                         }
                         break;
                     case 5:
@@ -220,7 +259,6 @@ namespace AdventofCode2019
                         relativeBase += intcodeR[index[0]];
                         break;
                     case 99:
-                        //Console.WriteLine(name + ": Operation complete");
                         _continue = false;
                         break;                       
                 }
@@ -267,6 +305,43 @@ namespace AdventofCode2019
                     break;
             }
             return new long[] { i1, i2, i3 };
+        }
+        private void DrawTile()
+        {
+            long[] gameField = new long[] { output[output.Length-3], output[output.Length - 2], output[output.Length - 1] };
+            if (gameField[0] == -1 && gameField[1] == 0)
+            {
+                Console.SetCursorPosition(0, 25);
+                Console.WriteLine("                          ");
+                Console.SetCursorPosition(0, 25);
+                Console.WriteLine("Score: " + gameField[ 2]);
+            }
+            else
+            {
+                Console.SetCursorPosition((int)gameField[0], (int)gameField[1]);
+                switch (gameField[2])
+                {
+                    case 0:
+                        Console.Write(" ");
+                        break;
+                    case 1:
+                        Console.Write("#");
+                        break;
+                    case 2:
+                        Console.Write("=");
+                        break;
+                    case 3:
+                        Console.Write("-");
+                        break;
+                    case 4:
+                        Console.Write("o");
+                        break;
+                    default:
+                        Console.Write("-1");
+                        break;
+                }
+            }
+            
         }
     }
 }

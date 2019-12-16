@@ -46,6 +46,7 @@
     <Compile Include="Fuel.cs" />
     <Compile Include="IntcodeComputer.cs" />
     <Compile Include="JupiterMoons.cs" />
+    <Compile Include="Nanofactory.cs" />
     <Compile Include="OrbitMap.cs" />
     <Compile Include="Passwort6D.cs" />
     <Compile Include="XYZ.cs" />

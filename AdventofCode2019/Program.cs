@@ -26,7 +26,7 @@ namespace AdventofCode2019
                     case 2:
                         IntcodeComputer ic1 = new IntcodeComputer("../../../input/gravity_assist_programm.txt");
                         ic1.Alarm1202();
-                        long[] intcode = ic1.Run(true,false);
+                        long[] intcode = ic1.Run(1);
                         int nounverb = -1;
                         for (int noun = 0; noun <= 99; noun++)
                         {
@@ -34,7 +34,7 @@ namespace AdventofCode2019
                             {
                                 ic1 = new IntcodeComputer("../../../input/gravity_assist_programm.txt");
                                 ic1.SetNounVerb(noun, verb);
-                                long[] check = ic1.Run(true,false);
+                                long[] check = ic1.Run(1);
                                 if (check[0] == 19690720)
                                 {
                                     nounverb = 100 * noun + verb;
@@ -54,7 +54,7 @@ namespace AdventofCode2019
                     case 5:
                         Console.WriteLine("day 5 solution: ");
                         IntcodeComputer ic2 = new IntcodeComputer("../../../input/TEST.txt");
-                        ic2.Run(true,false);
+                        ic2.Run(1);
                         Console.Write("\n");
                         break;
                     case 6:
@@ -81,7 +81,7 @@ namespace AdventofCode2019
                                                 for (int n = 0; n < 5; n++)
                                                 {
                                                     ic3.SetInput(new long[] {phase[n], inputSignal });
-                                                    ic3.Run(false,false);
+                                                    ic3.Run(0);
                                                     inputSignal = ic3.GetLastOutput();
                                                 }
                                                 if (inputSignal > highestoutput1)
@@ -125,12 +125,6 @@ namespace AdventofCode2019
                                                 ampD.SetInput(new long[] { l });
                                                 ampE.SetInput(new long[] { m });
 
-                                                ampA.SetName("ampA");
-                                                ampB.SetName("ampB");
-                                                ampC.SetName("ampC");
-                                                ampD.SetName("ampD");
-                                                ampE.SetName("ampE");
-
                                                 Thread aThread = new Thread(AmplifierLoopThread),bThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),cThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),dThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread)),eThread = new Thread(new ParameterizedThreadStart(AmplifierLoopThread));
                                                 aThread.Start(ampA);
                                                 bThread.Start(ampB);
@@ -157,7 +151,7 @@ namespace AdventofCode2019
                         break;
                     case 9:
                         IntcodeComputer icBOOST = new IntcodeComputer("../../../input/BOOST.txt");
-                        icBOOST.Run(true, false);
+                        icBOOST.Run(1);
                         break;
                     case 10:
                         break;
@@ -169,8 +163,9 @@ namespace AdventofCode2019
                         break;
                     case 13:
                         IntcodeComputer ArcadeGame = new IntcodeComputer("../../../input/arcade_game.txt");
-                        ArcadeGame.Run(false,false);
+                        ArcadeGame.Run(0);
                         long[] gameFieldData = ArcadeGame.GetOutput();
+                        ArcadeGame.ResetOutput();
                         int blockTileCount = 0;
                         for (int i = 0; i < gameFieldData.Length; i += 3)
                         {
@@ -180,34 +175,26 @@ namespace AdventofCode2019
                             }
                         }
                         Console.WriteLine("\nday 13 solution: {0}", blockTileCount);
-                        //for (int i = 0; i < gameFieldData.Length; i+=3)
-                        //{
-                        //    Console.SetCursorPosition((int)gameFieldData[i], (int)gameFieldData[i + 1]);
-                        //    switch (gameFieldData[i + 2])
-                        //    {
-                        //        case 0:
-                        //            Console.Write(" ");
-                        //            break;
-                        //        case 1:
-                        //            Console.Write("#");
-                        //            break;
-                        //        case 2:
-                        //            Console.Write("=");
-                        //            blockTileCount++;
-                        //            break;
-                        //        case 3:
-                        //            Console.Write("-");
-                        //            break;
-                        //        case 4:
-                        //            Console.Write("o");
-                        //            break;
-                        //        default:
-                        //            Console.Write("-1");
-                        //            break;
-                        //    }
-                        //}
+                        string e;
+                        do
+                        {
+                            Console.Write("\nPlay game?(Y/N): ");
+                            e = Console.ReadLine();
+                            if (true)
+                            {
+                                ArcadeGame.SetValueAtX(0, 2);
+                                ArcadeGame.SetInput(new long[] { 0 });
+                                ArcadeGame.Run(3);
+                                ArcadeGame.ResetOutput();
+
+                                Console.CursorLeft = 0;
+                                Console.CursorTop += 2;
+                            }
+                        } while (e == "y" || e == "Y");
                         break;
                     case 14:
+                        Nanofactory nf = new Nanofactory("../../../input/nanofactory1.txt");
+                        Console.WriteLine("day 14 solution: {0}",nf.GetOreAmountOf("FUEL"));
                         break;
                     case 15:
                         break;
@@ -253,7 +240,7 @@ namespace AdventofCode2019
         public static void AmplifierLoopThread(object obj)
         {
             IntcodeComputer ic = (IntcodeComputer)obj;
-            ic.Run(false,true);
+            ic.Run(2);
         } 
     }
 }
