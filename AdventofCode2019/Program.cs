@@ -193,8 +193,8 @@ namespace AdventofCode2019
                         } while (e == "y" || e == "Y");
                         break;
                     case 14:
-                        Nanofactory nf = new Nanofactory("../../../input/nanofactory1.txt");
-                        Console.WriteLine("day 14 solution: {0}",nf.GetOreAmountOf("FUEL"));
+                        Nanofactory nf1 = new Nanofactory("../../../input/nanofactory.txt"), nf2 = new Nanofactory("../../../input/nanofactory.txt");
+                        Console.WriteLine("day 14 solution: {0} {1}",nf1.GetOreAmountOf("FUEL"),nf2.GetSubstanceAmountForORE("FUEL", 1000000000000));
                         break;
                     case 15:
                         break;

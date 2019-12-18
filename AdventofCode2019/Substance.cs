@@ -8,7 +8,7 @@ namespace AdventofCode2019
 {
     class Substance
     {
-        private int requiredAmount, excessAmount,amountFromReaction;
+        private int requiredAmount, excessAmount, amountFromReaction,preUsedRRA;
         private string name;
         private string[] components;
         private Nanofactory nanofactory;
@@ -21,32 +21,59 @@ namespace AdventofCode2019
             this.nanofactory = nanofactory;
             requiredAmount = 0;
             excessAmount = 0;
+            preUsedRRA=0;
         }
         public string Name
         {
             get => name;
         }
+        public int RequiredAmount
+        {
+            set => requiredAmount = value;
+        }
+        public void Reset()
+        {
+            requiredAmount = 0;
+            preUsedRRA = 0;
+        }
+        public int GetRequiredReactionsAmount()
+        {
+            int i;
+            for (i = 0; (i * amountFromReaction) < (requiredAmount+excessAmount-preUsedRRA); i++) ;
+            preUsedRRA = requiredAmount + excessAmount;
+            return i;
+        }
         public void AddRequiredAmount(int amount)
         {
-            int addRequiredAmount = 0;
-            amount -= excessAmount;
-            while (amount > addRequiredAmount)
+            int j = excessAmount;
+            bool amountNotZero = true;
+            for(int i = 1; i <= j&&amountNotZero; i++)
             {
-                addRequiredAmount += amountFromReaction;
+                if (amount > 0)
+                {
+                    amount--;
+                    excessAmount--;
+                    requiredAmount++;
+                }
+                else
+                {
+                    amountNotZero = false;
+                }
             }
-            excessAmount = addRequiredAmount % amount;
-             
-            requiredAmount += (addRequiredAmount / amount) * amount;
+            if (amount % amountFromReaction != 0)
+            {
+                int excessCalcHelp = amount;
+                excessCalcHelp -= (excessCalcHelp / amountFromReaction) * amountFromReaction;
+                excessAmount += amountFromReaction - excessCalcHelp;
+            }
+            requiredAmount += amount;
         }
         public int GetRequiredComponentsAmount()
         {
             int requiredComponentsAmount = 0;
             for(int i = 0; i < components.Length; i += 2)
             {
-                for(int j = 0; j < requiredAmount; j += amountFromReaction)
-                {
-                    requiredComponentsAmount += int.Parse(components[i]);
-                }
+                    requiredComponentsAmount += int.Parse(components[i])*GetRequiredReactionsAmount();
             }
             return requiredComponentsAmount;
         }

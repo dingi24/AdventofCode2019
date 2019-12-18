@@ -49,6 +49,7 @@
     <Compile Include="Nanofactory.cs" />
     <Compile Include="OrbitMap.cs" />
     <Compile Include="Passwort6D.cs" />
+    <Compile Include="Substance.cs" />
     <Compile Include="XYZ.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
